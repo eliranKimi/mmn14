@@ -4,8 +4,6 @@
 #include "functionDeclare.h"
 #include "dataStructures.h"
 /* ====== Externs ====== */
-/* Use the commands list from firstRead.c */
-extern const command cmdArr[];
 
 /* Use the data from firstRead.c */
 extern labelInfo labelArr[MAX_LABELS_NUM];

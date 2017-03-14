@@ -9,6 +9,12 @@ C_SRCS += \
 ../secondRead.c \
 ../utility.c 
 
+O_SRCS += \
+../firstRead.o \
+../main.o \
+../secondRead.o \
+../utility.o 
+
 OBJS += \
 ./firstRead.o \
 ./main.o \
