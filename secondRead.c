@@ -1,7 +1,8 @@
 
 /* ======== Includes ======== */
-#include "assembler.h"
-
+#include "const.h"
+#include "functionDeclare.h"
+#include "dataStructures.h"
 /* ====== Externs ====== */
 /* Use the commands list from firstRead.c */
 extern const command cmdArr[];
@@ -41,20 +42,6 @@ int secondFileRead(int *memoryArr, lineInfo *linesArr, int lineNum, int IC, int 
 
 	/* Add the data from dataArr to the end of memoryArr */
 	addDataToMemory(memoryArr, &memoryCounter, DC);
-
-	int ix;
-	int countix=0;
-		printf("\nMemory :\n");
-			for (ix = 0; ix < memoryCounter; ix++)
-			{countix++;
-				printf(" ######## ");
-				printf("  %d ",memoryArr[ix]);
-				printf(" ######## \n");
-
-
-
-			}
-		printf("count:%d\n",countix);
 
 	return errorsFound;
 }
@@ -201,7 +188,7 @@ bool updateLableOpAddress(operandInfo *op, int lineNum)
 				/* Print errors (legal name is illegal or not exists yet) */
 				if (isLegalLabel(op->str, lineNum, TRUE))
 				{
-					printf("No such label as \"%s\"",op->str);
+					printf("ERROR: No such label as \"%s\"",op->str);
 					/*printError(lineNum, "No such label as \"%s\"", op->str);*/
 				}
 				return FALSE;
@@ -311,7 +298,6 @@ void addWordToMemory(int *memoryArr, int *memoryCounter, memoryWord memory,bool 
 	{
 		/* Add the memory word and increase memoryCounter */
 		memoryArr[(*memoryCounter)++] = getNumFromMemoryWord(memory,isitcmd);
-		printf("\nMem %d : %d\n",*memoryCounter-1,memoryArr[*memoryCounter-1]);
 	}
 }
 
@@ -339,4 +325,24 @@ void addDataToMemory(int *memoryArr, int *memoryCounter, int DC)
 		}
 	}
 }
+
+void printMemArr(int memoryCounter,int *memoryArr)
+{
+
+	int i;
+	int lineCount=0;
+		printf("\nMemory :\n");
+			for (i= 0; i < memoryCounter; i++)
+			{lineCount++;
+				printf(" ######## ");
+				printf("  %d ",memoryArr[i]);
+				printf(" ######## \n");
+
+
+
+			}
+		printf("count:%d\n",lineCount);
+
+}
+
 

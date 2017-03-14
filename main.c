@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "assembler.h"
-
+#include "const.h"
+#include "functionDeclare.h"
 /* ====== Global Data Structures ====== */
 
 /* Labels */
@@ -77,10 +77,10 @@ void parseFile(char *fileName)
 		/* Open File */
 	if (file == NULL)
 	{
-		printf("[Info] Can't open the file \"%s.as\".\n", fileName);
+		printf("ERROR: Can't open the file \"%s.as\".\n", fileName);
 		return;
 	}
-	printf("[Info] Successfully opened the file \"%s.as\".\n", fileName);
+	/*printf("[Info] Successfully opened the file \"%s.as\".\n", fileName);*/
 
 
 	/* First Read */
@@ -94,13 +94,14 @@ void parseFile(char *fileName)
 		createObjectFile(fileName, IC, DC, memoryArr);
 		createExternFile(fileName, linesArr, linesFound); 
 		createEntriesFile(fileName);
-		printf("[Info] Created output files for the file \"%s.as\".\n", fileName);
+		printf("\n##############\nSuccess!  Created output files for the file \"%s.as\".\n##############\n", fileName);
 	}
 	else
 	{
 		/* print the number of errors. */
-		printf("[Info] A total of %d error%s found throughout \"%s.as\".\n", numOfErrors, (numOfErrors > 1) ? "s were" : " was", fileName);
+		printf("\n##############\nDidn't create files for \"%s.as\"\nTotal number of errors:  %d .\n##############\n",fileName, numOfErrors );
 	}
+	clearData(linesArr, linesFound, IC + DC);
 
 }
 
@@ -247,5 +248,40 @@ void createExternFile(char *name, lineInfo *linesArr, int linesFound)
 	if (file)
 	{
 		fclose(file);
+	}
+}
+/* Resets all the globals and free all the malloc blocks. */
+void clearData(lineInfo *linesArr, int linesFound, int dataCount)
+{
+	int i;
+
+	/* --- Reset Globals --- */
+
+	/* Reset global labels */
+	for (i = 0; i < labelNum; i++)
+	{
+		labelArr[i].address = 0;
+		labelArr[i].isData = 0;
+		labelArr[i].isExtern = 0;
+	}
+	labelNum = 0;
+
+	/* Reset global entry lines */
+	for (i = 0; i < entryLabelsNum; i++)
+	{
+		entryLines[i] = NULL;
+	}
+	entryLabelsNum = 0;
+
+	/* Reset global data */
+	for (i = 0; i < dataCount; i++)
+	{
+		dataArr[i] = 0;
+	}
+
+	/* Free malloc blocks */
+	for (i = 0; i < linesFound; i++)
+	{
+		free(linesArr[i].originalString);
 	}
 }

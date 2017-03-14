@@ -1,3 +1,8 @@
-utility.o: ../utility.c ../assembler.h
+utility.o: ../utility.c ../const.h ../dataStructures.h \
+ ../functionDeclare.h
 
-../assembler.h:
+../const.h:
+
+../dataStructures.h:
+
+../functionDeclare.h:

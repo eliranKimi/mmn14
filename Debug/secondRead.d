@@ -1,3 +1,8 @@
-secondRead.o: ../secondRead.c ../assembler.h
+secondRead.o: ../secondRead.c ../const.h ../functionDeclare.h \
+ ../dataStructures.h
 
-../assembler.h:
+../const.h:
+
+../functionDeclare.h:
+
+../dataStructures.h:

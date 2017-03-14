@@ -1,18 +1,9 @@
-/*
-This file contains utility parsing functions, mainly for the first read.
-
-=======================
-By Lotem Ben Yaakov
-ID 206663932
-=======================
-*/
-
 
 /* ======== Includes ======== */
-#include "assembler.h"
 
-#include <ctype.h>
-#include <stdlib.h>
+#include "const.h"
+#include "dataStructures.h"
+#include "functionDeclare.h"
 
 /* ====== Methods ====== */
 extern const command cmdArr[];
@@ -40,7 +31,7 @@ bool isCommentOrEmpty(lineInfo *line)
 	if (*startOfText == ';')
 	{
 		/* Illegal comment - ';' isn't at the start of the line */
-		printf( "Error %d Comments must start with ';' at the start of the line.",line->lineNum);
+		printf( "ERROR:  %d Comments must start with ';' at the start of the line.",line->lineNum);
 		line->isError = TRUE;
 		return TRUE;
 	}
@@ -262,21 +253,21 @@ bool isLegalLabel(char *labelStr, int lineNum, bool printErrors)
 	/* Check if the label is short enough */
 	if (strlen(labelStr) > MAX_LABEL_LENGTH)
 	{
-		if (printErrors) printf("%d:Label is too long. Max label name length is %d.",lineNum, MAX_LABEL_LENGTH);
+		if (printErrors) printf("ERROR: %d:Label is too long. Max label name length is %d.",lineNum, MAX_LABEL_LENGTH);
 		return FALSE;
 	}
 
 	/* Check if the label isn't an empty string */
 	if (*labelStr == '\0')
 	{
-		if (printErrors) printf("%d: Label name is empty.",lineNum);
+		if (printErrors) printf("ERROR: %d: Label name is empty.",lineNum);
 		return FALSE;
 	}
 
 	/* Check if the 1st char is a letter. */
 	if (isspace(*labelStr))
 	{
-		if (printErrors) printf("%d:Label must start at the start of the line.",lineNum);
+		if (printErrors) printf("ERROR: %d:Label must start at the start of the line.",lineNum);
 		return FALSE;
 	}
 
@@ -285,7 +276,7 @@ bool isLegalLabel(char *labelStr, int lineNum, bool printErrors)
 	{
 		if (!isalnum(labelStr[i]))
 		{
-			if (printErrors) printf("%d:\"%s\" is illegal label - use letters and numbers only.",lineNum, labelStr);
+			if (printErrors) printf("ERROR: %d:\"%s\" is illegal label - use letters and numbers only.",lineNum, labelStr);
 			return FALSE;
 		}
 	}
@@ -293,21 +284,21 @@ bool isLegalLabel(char *labelStr, int lineNum, bool printErrors)
 	/* Check if the 1st char is a letter. */
 	if (!isalpha(*labelStr))
 	{
-		if (printErrors) printf("%d:\"%s\" is illegal label - first char must be a letter.",lineNum, labelStr);
+		if (printErrors) printf("ERROR: %d:\"%s\" is illegal label - first char must be a letter.",lineNum, labelStr);
 		return FALSE;
 	}
 
 	/* Check if it's not a name of a register */
 	if (isRegister(labelStr, NULL)) /* NULL since we don't have to save the register number */
 	{
-		if (printErrors) printf("%d:\"%s\" is illegal label - don't use a name of a register.",lineNum, labelStr);
+		if (printErrors) printf("ERROR: %d:\"%s\" is illegal label - don't use a name of a register.",lineNum, labelStr);
 		return FALSE;
 	}
 
 	/* Check if it's not a name of a command */
 	if (getCmdId(labelStr) != -1)
 	{
-		if (printErrors) printf("%d:\"%s\" is illegal label - don't use a name of a command.",lineNum, labelStr);
+		if (printErrors) printf("ERROR: %d:\"%s\" is illegal label - don't use a name of a command.",lineNum, labelStr);
 		return FALSE;
 	}
 
@@ -418,11 +409,11 @@ bool isLegalStringParam(char **strParam, int lineNum)
 
 	if (**strParam == '\0')
 	{
-		printf("%d:No parameter.",lineNum);
+		printf("ERROR: %d:No parameter.",lineNum);
 	}
 	else
 	{
-		printf("%d:The parameter for .string must be enclosed in quotes.",lineNum);
+		printf("ERROR: %d:The parameter for .string must be enclosed in quotes.",lineNum);
 	}
 	return FALSE;
 }
@@ -437,7 +428,7 @@ bool isLegalNum(char *numStr, int numOfBits, int lineNum, int *value)
 
 	if (isWhiteSpaces(numStr))
 	{
-		printf("%d:Empty parameter.",lineNum);
+		printf("ERROR: %d:Empty parameter.",lineNum);
 		return FALSE;
 	}
 
@@ -446,7 +437,7 @@ bool isLegalNum(char *numStr, int numOfBits, int lineNum, int *value)
 	/* Check if endOfNum is at the end of the string */
 	if (*endOfNum)
 	{
-		printf("%d:\"%s\" isn't a valid number.",lineNum, numStr);
+		printf("ERROR: %d:\"%s\" isn't a valid number.",lineNum, numStr);
 		return FALSE;
 	}
 
@@ -454,7 +445,7 @@ bool isLegalNum(char *numStr, int numOfBits, int lineNum, int *value)
 	(if the absolute value of number is smaller than 'maxNum' */
 	if (*value > maxNum || *value < -maxNum)
 	{
-		printf("%d:\"%s\" is too %s, must be between %d and %d.",lineNum, numStr, (*value > 0) ? "big" : "small", -maxNum, maxNum);
+		printf("ERROR: %d:\"%s\" is too %s, must be between %d and %d.",lineNum, numStr, (*value > 0) ? "big" : "small", -maxNum, maxNum);
 		return FALSE;
 	}
 

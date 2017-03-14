@@ -4,8 +4,6 @@ LOOP:	jmp END
 		prn	#-5
 		sub	r1,r4
 		inc	K
-
-
 ;Hey ! 
 		mov r7[r6],r3
 		bne	LOOP

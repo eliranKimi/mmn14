@@ -1,3 +1,8 @@
-firstRead.o: ../firstRead.c ../assembler.h
+firstRead.o: ../firstRead.c ../const.h ../functionDeclare.h \
+ ../dataStructures.h
 
-../assembler.h:
+../const.h:
+
+../functionDeclare.h:
+
+../dataStructures.h:

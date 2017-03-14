@@ -1,3 +1,7 @@
-main.o: ../main.c ../assembler.h
+main.o: ../main.c ../const.h ../functionDeclare.h ../dataStructures.h
 
-../assembler.h:
+../const.h:
+
+../functionDeclare.h:
+
+../dataStructures.h:
