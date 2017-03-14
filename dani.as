@@ -1,5 +1,5 @@
 .entry LOOP
-MAIN:	inasdsadasdfc K
+MAIN:	inc K
 		mov r5[r2],W
 .extern W
 		add r2,STR
