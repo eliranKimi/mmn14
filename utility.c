@@ -1,11 +1,11 @@
 
-/* ======== Includes ======== */
+
 
 #include "const.h"
 #include "dataStructures.h"
 #include "functionDeclare.h"
 
-/* ====== Methods ====== */
+
 extern const command cmdArr[];
 extern labelInfo labelArr[];
 extern int labelNum;

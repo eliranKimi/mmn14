@@ -3,14 +3,14 @@
 #include "functionDeclare.h"
 #include "dataStructures.h"
 
-/* ====== Externs ====== */
+
 extern labelInfo labelArr[MAX_LABELS_NUM]; /* Label array */
 extern int labelNum; /* Index label array */
 lineInfo *entryLines[MAX_LABELS_NUM]; /* Entry-s array */
 extern int entryLabelsNum; /* Index to entery array */
 extern int dataArr[MAX_DATA_NUM]; /* Data array- DC-data-counter */
 
-/* ====== Commands List ====== */
+/* Commands Array */
 const command cmdArr[] =	
 {	/* Name | Opcode | NumOfParams */
 	{ "mov", 0, 2 } , 
@@ -29,17 +29,8 @@ const command cmdArr[] =
 	{ "jsr", 13, 1 } ,
 	{ "rst", 14, 0 } ,
 	{ "stop", 15, 0 } ,
-	{ NULL } /* represent the end of the array */
+	{ NULL }
 }; 
-
-const directive dircArr[] = 
-{	/* Name | Parseing Function */
-	{ "data", parseDataDirc } ,
-	{ "string", parseStringDirc } ,
-	{ "extern", parseExternDirc },
-	{ "entry", parseEntryDirc },
-	{ NULL } /* represent the end of the array */
-};	
 
 void printData(int DC)
 {
@@ -379,21 +370,31 @@ void parseEntryDirc(lineInfo *line)
 /* Parses the directive and in a directive line. */
 void parseDirective(lineInfo *line, int *IC, int *DC)
 {
-	int i = 0;
-	while (dircArr[i].name)
+
+	if ( !strcmp(line->commandStr,"data"))
 	{
-		if (!strcmp(line->commandStr, dircArr[i].name))
-		{
-			/* Call the parse function for this type of directive */
-			dircArr[i].parseFunc(line, IC, DC);
-			return;
-		}
-		i++;
+		parseDataDirc(line,IC,DC);
 	}
-	
-	/* line->commandStr isn't a real directive */
-	printf("ERROR: %d:No such directive as \"%s\".",line->lineNum, line->commandStr);
-	line->isError = TRUE;
+	else if (!strcmp(line->commandStr,"string"))
+	{
+		parseStringDirc(line,IC,DC);
+	}
+	else if (!strcmp(line->commandStr,"extern"))
+	{
+		parseExternDirc(line);
+	}
+	else if (!strcmp(line->commandStr,"entry"))
+	{
+		parseEntryDirc(line);
+	}
+	else
+	{
+		printf("ERROR: %d:No such directive as \"%s\".",line->lineNum, line->commandStr);
+		line->isError = TRUE;
+
+	}
+
+
 }
 
 /* Returns if the operands' types are legal (depending on the command). */
@@ -404,7 +405,6 @@ bool areLegalOpTypes(const command *cmd, operandInfo op1, operandInfo op2, int l
 	if (cmd->opcode == 6 && op1.type != LABEL)
 	{
 		printf("ERROR: %d:Source operand for \"%s\" command must be a label.\n",lineNum,cmd->name);
-		/*printError(lineNum, "Source operand for \"%s\" command must be a label.", cmd->name);*/
 		return FALSE;
 	}
 
@@ -415,7 +415,6 @@ bool areLegalOpTypes(const command *cmd, operandInfo op1, operandInfo op2, int l
 	if (op2.type == NUMBER && cmd->opcode != 1 && cmd->opcode != 12)
 	{
 		printf("ERROR: %d:Destination operand for \"%s\" command can't be a number.\n",lineNum,cmd->name);
-		/*printError(lineNum, "Destination operand for \"%s\" command can't be a number.", cmd->name);*/
 		return FALSE;
 	}
 
@@ -430,7 +429,6 @@ void parseOpInfo(operandInfo *operand, int lineNum)
 	if (isWhiteSpaces(operand->str))
 	{
 		printf("ERROR: %d:Empty parameter.",lineNum);
-		/*printError(lineNum, "Empty parameter.");*/
 		operand->type = INVALID;
 		return;
 	}
@@ -445,7 +443,6 @@ void parseOpInfo(operandInfo *operand, int lineNum)
 		if (isspace(*operand->str)) 
 		{
 			printf("ERROR: %d:There is a white space after'#'.",lineNum);
-			/*printError(lineNum, "There is a white space afetr the '#'.");*/
 			operand->type = INVALID;
 		}
 		else
@@ -488,7 +485,6 @@ void parseOpInfo(operandInfo *operand, int lineNum)
 	else
 	{
 		printf("ERROR: %d:\"%s\" is an invalid parameter.",lineNum,operand->str);
-		/*printError(lineNum, "\"%s\" is an invalid parameter.", operand->str);*/
 		operand->type = INVALID;
 		value = -1;
 	}
@@ -574,11 +570,9 @@ void parseCmdOperands(lineInfo *line, int *IC, int *DC)
 		if (numOfOpsFound <  line->cmd->numOfParams)
 		{
 			printf("ERROR: %d: Not enough operands for %s\n", line->lineNum,line->commandStr);
-			/*printError(line->lineNum, "Not enough operands.", line->commandStr);*/
 		}
 		else
 		{	printf("ERROR: %d: Too many operands for %s\n", line->lineNum,line->commandStr);
-			/*printError(line->lineNum, "Too many operands.", line->commandStr);*/
 		}
 
 		line->isError = TRUE;
@@ -589,7 +583,6 @@ void parseCmdOperands(lineInfo *line, int *IC, int *DC)
 	if (foundComma)
 	{
 		printf("ERROR: %d:Comma error\n",line->lineNum);
-	/*	printError(line->lineNum, "Don't write a comma after the last parameter.");*/
 		line->isError = TRUE;
 		return;
 	}
@@ -612,14 +605,12 @@ void parseCommand(lineInfo *line, int *IC, int *DC)
 		{
 			/* The command is empty, but the line isn't empty so it's only a label. */
 			printf("ERROR: %d:Can't write a label to an empty line. %s \n",line->lineNum,line->commandStr);
-			/*printError(line->lineNum, "Can't write a label to an empty line.", line->commandStr);*/
 		}
 		else
 		{
 			/* Illegal command. */
 			printf("ERROR: %d:No such command as \"%s\".\n",line->lineNum,line->commandStr);
 
-			/*printError(line->lineNum, "No such command as \"%s\".", line->commandStr);*/
 		}
 		line->isError = TRUE;
 		return;

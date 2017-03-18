@@ -1,9 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 #include "const.h"
 #include "functionDeclare.h"
-/* ====== Global Data Structures ====== */
+#include "dataStructures.h"
 
 /* Labels */
 labelInfo labelArr[MAX_LABELS_NUM]; 
@@ -16,7 +14,6 @@ int entryLabelsNum = 0;
 /* Data */
 int dataArr[MAX_DATA_NUM];
 
-void printError(int lineNum, const char *format, ...);
 FILE *openFile(char *name, char *ending, const char *mode);
 void parseFile(char *fileName);
 
@@ -43,11 +40,7 @@ int main(int argc, char* argv[])
 }
 
 
-/* Print an error with the line number. */
-void printError(int lineNum, const char *format, ...)
-{
-	return;
-}
+
 FILE *openFile(char *name, char *ending, const char *mode)
 {
 	FILE *file;
@@ -70,7 +63,6 @@ void parseFile(char *fileName)
 	int numOfErrors = 0;
 	int linesFound = 0;
 
-	/*char line[MAX_LINES_NUM];*/
 
 	FILE *file = openFile(fileName,".as", "r");
 	
@@ -80,8 +72,6 @@ void parseFile(char *fileName)
 		printf("ERROR: Can't open the file \"%s.as\".\n", fileName);
 		return;
 	}
-	/*printf("[Info] Successfully opened the file \"%s.as\".\n", fileName);*/
-
 
 	/* First Read */
 	numOfErrors += firstFileRead(file, linesArr, &linesFound, &IC, &DC);
@@ -90,7 +80,6 @@ void parseFile(char *fileName)
 /* Create Output Files */
 	if (numOfErrors == 0)
 	{
-		/* Create all the output files */
 		createObjectFile(fileName, IC, DC, memoryArr);
 		createExternFile(fileName, linesArr, linesFound); 
 		createEntriesFile(fileName);
@@ -125,7 +114,6 @@ int intToBase16(int num, char *buf, int index)
 void fprintfBase16(FILE *file, int num, int strMinWidth)
 {
 	int numOfZeros, i;
-	/* 2^15 = 32 ^ 3, So 3 chars are enough to represent 15 bits in base 32, and the last char is \0. */
 	char buf[4] = { 0 };
 
 	intToBase16(num, buf, 0);
@@ -139,7 +127,6 @@ void fprintfBase16(FILE *file, int num, int strMinWidth)
 	fprintf(file, "%s", buf);
 }
 
-/* Creates the .obj file, which contains the assembled lines in base 16. */
 void createObjectFile(char *name, int IC, int DC, int *memoryArr)
 {
 	int i;
@@ -190,7 +177,6 @@ void createEntriesFile(char *name)
 	fclose(file);
 }
 
-/* Creates the .ext file, which contains the addresses for the extern labels operands in base 32. */
 void createExternFile(char *name, lineInfo *linesArr, int linesFound)
 {
 	int i;
@@ -250,14 +236,13 @@ void createExternFile(char *name, lineInfo *linesArr, int linesFound)
 		fclose(file);
 	}
 }
-/* Resets all the globals and free all the malloc blocks. */
+/* Resets all the arrays and free all the malloc blocks. */
 void clearData(lineInfo *linesArr, int linesFound, int dataCount)
 {
 	int i;
 
-	/* --- Reset Globals --- */
 
-	/* Reset global labels */
+	/* Reset  labels array */
 	for (i = 0; i < labelNum; i++)
 	{
 		labelArr[i].address = 0;
@@ -266,14 +251,14 @@ void clearData(lineInfo *linesArr, int linesFound, int dataCount)
 	}
 	labelNum = 0;
 
-	/* Reset global entry lines */
+	/* Reset  entry lines array */
 	for (i = 0; i < entryLabelsNum; i++)
 	{
 		entryLines[i] = NULL;
 	}
 	entryLabelsNum = 0;
 
-	/* Reset global data */
+	/* Reset  data */
 	for (i = 0; i < dataCount; i++)
 	{
 		dataArr[i] = 0;

@@ -84,6 +84,5 @@ void createObjectFile(char *name, int IC, int DC, int *memoryArr);
 void createEntriesFile(char *name);
 void createExternFile(char *name, lineInfo *linesArr, int linesFound);
 void clearData(lineInfo *linesArr, int linesFound, int dataCount);
-/*void printError(int lineNum, const char *format, ...);*/
 
 #endif

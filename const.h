@@ -11,14 +11,11 @@
 #include <stdio.h>
 #include <string.h>
 
-/* ======== Macros ======== */
-/* Utilities */
 #define FOREVER				for(;;)
 #define BYTE_SIZE			8
 #define FALSE				0
 #define TRUE				1
 
-/* Given Constants */
 #define MAX_DATA_NUM		1000
 #define FIRST_ADDRESS		100
 #define MAX_LINE_LENGTH		80
@@ -26,7 +23,6 @@
 #define MEMORY_WORD_LENGTH	15
 #define MAX_REGISTER_DIGIT	7
 
-/* Defining Constants */
 #define MAX_LINES_NUM		700
 #define MAX_LABELS_NUM		MAX_LINES_NUM
 

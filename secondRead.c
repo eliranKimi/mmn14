@@ -1,18 +1,15 @@
 
-/* ======== Includes ======== */
 #include "const.h"
 #include "functionDeclare.h"
 #include "dataStructures.h"
-/* ====== Externs ====== */
 
-/* Use the data from firstRead.c */
 extern labelInfo labelArr[MAX_LABELS_NUM];
 extern int labelNum;
 lineInfo *entryLines[MAX_LABELS_NUM];
 extern int entryLabelsNum;
 extern int dataArr[MAX_DATA_NUM];
 
-/* ====== Methods ====== */
+
 
 /* Reads the data from the first read for the second time. */
 /* It converts all the lines into the memory. */
@@ -73,13 +70,13 @@ int countIllegalEntries()
 		{
 			if (label->isExtern)
 			{
-				/*printError(entryLines[i]->lineNum, "The parameter for .entry can't be an external label.");*/
+				printf("ERROR: %d:The parameter for .entry can't be an external label. \n",entryLines[i]->lineNum);
 				ret++;
 			}
 		}
 		else
 		{
-			/*printError(entryLines[i]->lineNum, "No such label as \"%s\".", entryLines[i]->lineStr);*/
+			printf("ERROR: %d:No such label as \"%s\". \n",entryLines[i]->lineNum,entryLines[i]->lineStr);
 			ret++;
 		}
 	}
@@ -187,7 +184,6 @@ bool updateLableOpAddress(operandInfo *op, int lineNum)
 				if (isLegalLabel(op->str, lineNum, TRUE))
 				{
 					printf("ERROR: No such label as \"%s\"",op->str);
-					/*printError(lineNum, "No such label as \"%s\"", op->str);*/
 				}
 				return FALSE;
 			}
@@ -224,7 +220,7 @@ int getOpTypeId(operandInfo op)
 	/* Check if the operand have legal type */
 	if (op.type != INVALID)
 	{
-		/* NUMBER = 0, LABEL = 1, isRandom Flag = 2, REGISTER = 3 */
+		/* Value according to opType (enum defeined at datastrucers.h )*/
 		return (op.value2) ? 2 : (int)op.type;
 	}
 
@@ -242,8 +238,6 @@ memoryWord getCmdMemoryWord(lineInfo line)
 	memory.valueBits.cmdBits.src = getOpTypeId(line.op1);
 	memory.valueBits.cmdBits.opcode = line.cmd->opcode;
 	memory.valueBits.cmdBits.group = line.cmd->numOfParams;
-	/*memory.valueBits.cmdBits.unused = -1;*/
-	/*memory.valueBits.cmdBits.rnd = (line.op1.isRandom) ? strlen(line.op1.str) : 0;  */
 
 	return memory;
 }

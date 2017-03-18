@@ -14,7 +14,6 @@
 #include "const.h"
 
 
-/* ======== Data Structures ======== */
 typedef unsigned int bool; /* Only get TRUE or FALSE values */
 
 /* === First Read  === */
@@ -28,12 +27,6 @@ typedef struct
 	bool isData;					/* Data flag (.data or .string) */
 } labelInfo;
 
-/* Directive And Commands */
-typedef struct
-{
-	char *name;
-	void (*parseFunc)();
-} directive;
 
 typedef struct
 {
@@ -51,7 +44,7 @@ typedef struct
 	int value2;				/*in case of mion2- this will be the value of the second register*/
 	char *str;				/* String */
 	opType type;			/* Type */
-	int address;			/* The adress of the operand in the memory */
+	int address;			/* The address of the operand in the memory */
 } operandInfo;
 
 /* Line */
@@ -91,7 +84,7 @@ typedef struct /* 15 bits */
 			unsigned int src : 2;		/* Source op addressing method ID */
 			unsigned int opcode : 4;	/* Command ID */
 			unsigned int group : 2;		/* Number of params */
-			unsigned int unused : 3;			/* Unused Bit */
+			unsigned int unused : 3;			/* Unused Bits */
 		} cmdBits;
 
 		/* Registers (only 13 bits) */
