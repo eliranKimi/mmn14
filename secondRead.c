@@ -149,7 +149,7 @@ bool addLineToMemory(int *memoryArr, int *memoryCounter, lineInfo *line)
 			/* Add the op1 word to the memory */
 			line->op1.address = FIRST_ADDRESS + *memoryCounter;
 			addWordToMemory(memoryArr, memoryCounter, getOpMemoryWord(line->op1, FALSE),FALSE);
-			/* ^^ The FALSE param means it's not the 2nd op */
+			/* First boolean is to check if operand isDest. second one isCmd */
 		}
 
 		/*Check if there is a destination operand in this line */
@@ -158,7 +158,7 @@ bool addLineToMemory(int *memoryArr, int *memoryCounter, lineInfo *line)
 			/* Add the op2 word to the memory */
 			line->op2.address = FIRST_ADDRESS + *memoryCounter;
 			addWordToMemory(memoryArr, memoryCounter, getOpMemoryWord(line->op2, TRUE),FALSE);
-			/* ^^ The TRUE param means it's the 2nd op */
+			/* First boolean is to check if operand isDest. second one isCmd */
 		}
 	}
 }

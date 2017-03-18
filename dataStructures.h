@@ -41,7 +41,7 @@ typedef enum { NUMBER = 0, LABEL = 1, INDEX = 2 , REGISTER = 3, INVALID = -1 } o
 typedef struct
 {
 	int value;				/* Value */
-	int value2;				/*in case of mion2- this will be the value of the second register*/
+	int value2;				/* In case of addressing method 2- this will be the value of the second register*/
 	char *str;				/* String */
 	opType type;			/* Type */
 	int address;			/* The address of the operand in the memory */

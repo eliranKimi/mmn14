@@ -5,21 +5,21 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../firstRead.c \
+../generalFunctions.c \
 ../main.c \
-../secondRead.c \
-../utility.c 
+../secondRead.c 
 
 OBJS += \
 ./firstRead.o \
+./generalFunctions.o \
 ./main.o \
-./secondRead.o \
-./utility.o 
+./secondRead.o 
 
 C_DEPS += \
 ./firstRead.d \
+./generalFunctions.d \
 ./main.d \
-./secondRead.d \
-./utility.d 
+./secondRead.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

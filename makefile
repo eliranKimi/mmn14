@@ -1,5 +1,5 @@
-main-run: main.o firstRead.o secondRead.o utility.o
-		gcc -g -ansi -Wall main.o firstRead.o secondRead.o utility.o -o main-run
+main-run: main.o firstRead.o secondRead.o generalFunctions.o
+		gcc -g -ansi -Wall main.o firstRead.o secondRead.o generalFunctions.o -o main-run
 
 firstRead.o: firstRead.c
 	gcc -c -ansi -Wall firstRead.c -o firstRead.o
@@ -7,8 +7,8 @@ firstRead.o: firstRead.c
 secondRead.o: secondRead.c
 	gcc -c -ansi -Wall secondRead.c -o secondRead.o	
 	
-utility.o: utility.c
-	gcc -c -ansi -Wall utility.c -o utility.o
+generalFunctions.o: generalFunctions.c
+	gcc -c -ansi -Wall generalFunctions.c -o generalFunctions.o
 
 main.o: main.c
 	gcc -c -ansi -Wall main.c -o main.o

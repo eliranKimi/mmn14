@@ -409,7 +409,6 @@ bool areLegalOpTypes(const command *cmd, operandInfo op1, operandInfo op2, int l
 	}
 
 	/* --- Check Second Operand --- */
-	/* 2nd operand can't be random */
 
 	/* 2nd operand can be a number only if the command is "cmp" (opcode is 1) or "prn" (opcode is 12).*/
 	if (op2.type == NUMBER && cmd->opcode != 1 && cmd->opcode != 12)

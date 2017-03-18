@@ -14,7 +14,7 @@
 
 
 /* ======== Methods Declaration ======== */
-/* utility.c methods */
+/* generalFunctions.c methods */
 int getCmdId(char *cmdName);
 void printLables();
 labelInfo *getLabel(char *labelName);
