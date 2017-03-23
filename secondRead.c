@@ -3,16 +3,16 @@
 #include "functionDeclare.h"
 #include "dataStructures.h"
 
-extern labelInfo labelArr[MAX_LABELS_NUM];
-extern int labelNum;
-lineInfo *entryLines[MAX_LABELS_NUM];
-extern int entryLabelsNum;
-extern int dataArr[MAX_DATA_NUM];
+/* Second read of the file - works with the data from first read*/
 
 
+extern labelInfo labelArr[MAX_LABELS_NUM]; /* Label array */
+extern int labelNum; /* Index to labels array */
+lineInfo *entryLines[MAX_LABELS_NUM]; /* Entry-s array */
+extern int entryLabelsNum; /* Index to entry array */
+extern int dataArr[MAX_DATA_NUM]; /* Data array- DC-data-counter */
 
-/* Reads the data from the first read for the second time. */
-/* It converts all the lines into the memory. */
+
 
 
 int secondFileRead(int *memoryArr, lineInfo *linesArr, int lineNum, int IC, int DC)
@@ -89,7 +89,6 @@ bool addLineToMemory(int *memoryArr, int *memoryCounter, lineInfo *line)
 {
 	bool foundError = FALSE;
 
-	/* Don't do anything if the line is error or if it's not a command line */
 	if (!line->isError && line->cmd != NULL)
 	{
 		/* Update the label operands value */
@@ -108,11 +107,11 @@ bool addLineToMemory(int *memoryArr, int *memoryCounter, lineInfo *line)
 	{
 		/* Create the memory word */
 		memoryWord memory = { 0 };
-		memory.era = (eraType)ABSOLUTE; /* Registers are absolute */
+		memory.era = (eraType)ABSOLUTE;
 		memory.valueBits.regBits.destBits = line->op1.value;
 		memory.valueBits.regBits.srcBits = line->op1.value2;
 
-		/* Add the memory to the memoryArr array */
+		/* Add the memory to  memory  array */
 		addWordToMemory(memoryArr, memoryCounter, memory,FALSE);
 
 	}
@@ -125,11 +124,13 @@ bool addLineToMemory(int *memoryArr, int *memoryCounter, lineInfo *line)
 		memory.valueBits.regBits.destBits = line->op2.value;
 		memory.valueBits.regBits.srcBits = line->op2.value2;
 
-		/* Add the memory to the memoryArr array */
+		/* Add to  memoryArr array */
 		addWordToMemory(memoryArr, memoryCounter, memory,FALSE);
 
 	}
 	}
+
+	/* If both operands are registers */
  if (line->op1.type == REGISTER && line->op2.type == REGISTER)
 	{
 		/* Create the memory word */
@@ -168,8 +169,8 @@ bool addLineToMemory(int *memoryArr, int *memoryCounter, lineInfo *line)
 
 
 
-/* If the op is a label, this method is updating the value of the it to be the address of the label. */
-/* Returns FALSE if there is an error, or TRUE otherwise. */
+/* Checks If the op is a label, this method is updating the value of the it to be the address of the label. */
+
 bool updateLableOpAddress(operandInfo *op, int lineNum)
 {
 	if (op->type == LABEL)
@@ -195,17 +196,17 @@ bool updateLableOpAddress(operandInfo *op, int lineNum)
 	return TRUE;
 }
 
-/* Returns the int value of a memory word. */
+/* Returns int value of a memory word. */
 int getNumFromMemoryWord(memoryWord memory,bool isitcmd)
 {
 	/* Create an int of "MEMORY_WORD_LENGTH" times '1', and all the rest are '0' */
 	unsigned int mask = ~0;
 	mask >>= (sizeof(int) * BYTE_SIZE - MEMORY_WORD_LENGTH);
 
-
+/* Checks if the word is a cmd word */
 	if ( isitcmd == TRUE)
 	{
-	/* The mask makes sure we only use the first "MEMORY_WORD_LENGTH" bits */
+	/* Turn on unused bits */
 	return 28672 | (mask & ((memory.valueBits.value << 2) + memory.era));
 	}
 	else
@@ -220,7 +221,7 @@ int getOpTypeId(operandInfo op)
 	/* Check if the operand have legal type */
 	if (op.type != INVALID)
 	{
-		/* Value according to opType (enum defeined at datastrucers.h )*/
+		/* Value according to opType (enum defined at datastrucers.h )*/
 		return (op.value2) ? 2 : (int)op.type;
 	}
 
@@ -318,6 +319,7 @@ void addDataToMemory(int *memoryArr, int *memoryCounter, int DC)
 	}
 }
 
+/* Prints memory array - Used for checking */
 void printMemArr(int memoryCounter,int *memoryArr)
 {
 

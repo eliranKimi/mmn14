@@ -3,6 +3,7 @@
 #include "functionDeclare.h"
 #include "dataStructures.h"
 
+/* First read of the file */
 
 extern labelInfo labelArr[MAX_LABELS_NUM]; /* Label array */
 extern int labelNum; /* Index label array */
@@ -60,7 +61,6 @@ int firstFileRead(FILE *file, lineInfo *linesArr, int *linesFound, int *IC, int 
 	{
 		fgets(lineStr, MAX_LINE_LENGTH + 2, file);
 	
-		/* Parse a line */
 			parseLine(&linesArr[*linesFound], lineStr, *linesFound + 1, IC, DC);
 
 			/* Update errorsFound */
@@ -72,10 +72,7 @@ int firstFileRead(FILE *file, lineInfo *linesArr, int *linesFound, int *IC, int 
 			++*linesFound;
 
 	}
-		/*printLables();
-		printData(*DC);
-		printf("IC:%d",*IC+FIRST_ADDRESS);
-*/
+
 		return errorsFound;
 
 }
@@ -113,13 +110,13 @@ void parseLine(lineInfo *line, char *lineStr, int lineNum, int *IC, int *DC)
 		line->lineStr = startOfNextPart;
 	}
 
-			/* Find the command token */
+			/* Find the command  */
 	line->commandStr = getFirstTok(line->lineStr, &startOfNextPart);
 	line->lineStr = startOfNextPart;
 	/* Parse the command / directive */
 	if (isDirective(line->commandStr))
 	{
-		line->commandStr++; /* Remove the '.' from the command */
+		line->commandStr++; /* Remove'.' from command */
 		parseDirective(line, IC, DC);
 	}
 	else
@@ -138,12 +135,10 @@ labelInfo * addLabelToArr(labelInfo label, lineInfo *line)
 	/* Check if label is legal */
 	if (!isLegalLabel(line->lineStr, line->lineNum, TRUE))
 	{
-		/* Illegal label name */
 		line->isError = TRUE;
 		return NULL;
 	}
 
-	/* Check if label is legal */
 	if (isExistingLabel(line->lineStr))
 	{
 		printf("ERROR: %d: Label already exists.",line->lineNum);
@@ -151,17 +146,14 @@ labelInfo * addLabelToArr(labelInfo label, lineInfo *line)
 		return NULL;
 	}
 
-	/* Add the name to the label */
 	strcpy(label.name, line->lineStr);
 
-	/* Add the label to g_labelArr and to the lineInfo */
 	if (labelNum < MAX_LABELS_NUM)
 	{
 		labelArr[labelNum] = label;
 		return &labelArr[labelNum++];
 	}
 
-	/* Too many labels */
 	printf("ERROR: %d: Too many labels - max is %d.",line->lineNum,MAX_LABELS_NUM);
 	line->isError = TRUE;
 	return NULL;
@@ -172,7 +164,7 @@ void removeLastLabel(int lineNum)
 	labelNum--;
 	printf("WARN: At line %d: The assembler ignored the label before the directive.\n", lineNum);
 }
-/* Adds the number to the g_dataArr and increases DC. Returns if it succeeded. */
+/* Adds the number to the dataArr and increases data counter */
 bool addNumberToData(int num, int *IC, int *DC, int lineNum)
 {
 	/* Check if there is enough space in g_dataArr for the data */
@@ -188,7 +180,7 @@ bool addNumberToData(int num, int *IC, int *DC, int lineNum)
 	return TRUE;
 }
 
-/* Adds the str to the g_dataArr and increases DC. Returns if it succeeded. */
+/* Adds  str to the dataArr and increases data counter */
 bool addStringToData(char *str, int *IC, int *DC, int lineNum)
 {
 	do
@@ -203,11 +195,11 @@ bool addStringToData(char *str, int *IC, int *DC, int lineNum)
 }
 char * checkLabel(lineInfo *line, int IC)
 {
-	char *labelEnd = strchr(line->lineStr, ':'); /* find location of : , if exists */
+	char *labelEnd = strchr(line->lineStr, ':'); /* finds ':' */
 	labelInfo label = { 0 };
 	label.address = FIRST_ADDRESS + IC;
 
-	/* Find the label (or return NULL if there isn't)- Means if found :, replace by \0 to recognize the label ends after that */
+	/* Find the label and place '\0\' at the end */
 	if (!labelEnd)
 	{
 		return NULL;
@@ -217,83 +209,79 @@ char * checkLabel(lineInfo *line, int IC)
 	/* Check if the sign ':' came after the first word */
 	if (!isOneWord(line->lineStr))
 	{
-		*labelEnd = ':'; /* Fix the change in line->lineStr */
+		*labelEnd = ':';
 		return NULL;
 	}
 
-	/* Check of the label is legal and add it to the labelList */
+	/* Check of the label& add it to the label array */
 	line->label = addLabelToArr(label, line);
 
-	return labelEnd + 1; /* +1 to make it point at the next char after the \0 */
+	return labelEnd + 1; /* Increase pointer to next character */
 }
 
-/* Parses a .data directive. */
+
 void parseDataDirc(lineInfo *line, int *IC, int *DC)
 {
 	char *operandTok = line->lineStr, *endOfOp = line->lineStr;
 	int operandValue;
 	bool foundComma;
 
-	/* Make the label a data label (if there is one) */
+	/* if data, turn on isData flag) */
 	if (line->label)
 	{
 		line->label->isData = TRUE;
 		line->label->address = FIRST_ADDRESS + *DC;
 	}
 
-	/* Check if there are params */
+	/* Check for parameters */
 	if (isWhiteSpaces(line->lineStr))
 	{
-		/* No parameters */
 		printf("ERROR: %d:No parameter.",line->lineNum);
 		line->isError = TRUE;
 		return;
 	}
 
-	/* Find all the params and add them to g_dataArr */
+	/* Find  parameters and add them data array */
 	FOREVER
 	{
-		/* Get next param or break if there isn't */
+		/* Get next parameter */
 		if (isWhiteSpaces(line->lineStr))
 		{
 			break;
 		}
 		operandTok = getFirstOperand(line->lineStr, &endOfOp, &foundComma);
 
-		/* Add the param to g_dataArr */
+		/* Add the parameter to data array */
 		if (isLegalNum(operandTok, MEMORY_WORD_LENGTH, line->lineNum, &operandValue))
 		{
 			if (!addNumberToData(operandValue, IC, DC, line->lineNum))
 			{
-				/* Not enough memory */
 				line->isError = TRUE;
 				return;
 			}
 		}
 		else
 		{
-			/* Illegal number */
 			line->isError = TRUE;
 			return;
 		}
 
-		/* Change the line to start after the parameter */
+		/* Increase pointer to str after parameter */
 		line->lineStr = endOfOp;
 	}
 
 	if (foundComma)
 	{
-		/* Comma after the last param */
+
 		printf("ERROR: %d:Do not write a comma after the last parameter.",line->lineNum);
 		line->isError = TRUE;
 		return;
 	}
 }
 
-/* Parses a .string directive. */
 void parseStringDirc(lineInfo *line, int *IC, int *DC)
 {
-	/* Make the label a data label (if there is one) */
+	/* if data, turn on isData flag) */
 	if (line->label)
 	{
 		line->label->isData = TRUE;
@@ -306,25 +294,23 @@ void parseStringDirc(lineInfo *line, int *IC, int *DC)
 	{
 		if (!addStringToData(line->lineStr, IC, DC, line->lineNum))
 		{
-			/* Not enough memory */
+
 			line->isError = TRUE;
 			return;
 		}
 	}
 	else
 	{
-		/* Illegal string */
 		line->isError = TRUE;
 		return;
 	}
 }
 
-/* Parses a .extern directive. */
 void parseExternDirc(lineInfo *line)
 {
 	labelInfo label = { 0 }, *labelPointer;
 
-	/* If there is a label in the line, remove the it from labelArr */
+	/* If label is a duplicate , remove it from label array */
 	if (line->label)
 	{
 		removeLastLabel(line->lineNum);
@@ -333,7 +319,7 @@ void parseExternDirc(lineInfo *line)
 	trimStr(&line->lineStr);
 	labelPointer = addLabelToArr(label, line);
 
-	/* Make the label an extern label */
+	/* if extern, turn on isExtern flag) */
 	if (!line->isError)
 	{
 		labelPointer->address = 0;
@@ -341,10 +327,9 @@ void parseExternDirc(lineInfo *line)
 	}
 }
 
-/* Parses a .entry directive. */
 void parseEntryDirc(lineInfo *line)
 {
-	/* If there is a label in the line, remove the it from labelArr */
+	/* If label is a duplicate , remove it from label array */
 	if (line->label)
 	{
 		removeLastLabel(line->lineNum);
@@ -367,23 +352,22 @@ void parseEntryDirc(lineInfo *line)
 	}
 }
 
-/* Parses the directive and in a directive line. */
 void parseDirective(lineInfo *line, int *IC, int *DC)
 {
 
-	if ( !strcmp(line->commandStr,"data"))
+	if ( !strcmp(line->commandStr,"data")) /* if data directive */
 	{
 		parseDataDirc(line,IC,DC);
 	}
-	else if (!strcmp(line->commandStr,"string"))
+	else if (!strcmp(line->commandStr,"string")) /* if string directive */
 	{
 		parseStringDirc(line,IC,DC);
 	}
-	else if (!strcmp(line->commandStr,"extern"))
+	else if (!strcmp(line->commandStr,"extern")) /* if extern directive */
 	{
 		parseExternDirc(line);
 	}
-	else if (!strcmp(line->commandStr,"entry"))
+	else if (!strcmp(line->commandStr,"entry")) /* if entry directive */
 	{
 		parseEntryDirc(line);
 	}
@@ -397,10 +381,10 @@ void parseDirective(lineInfo *line, int *IC, int *DC)
 
 }
 
-/* Returns if the operands' types are legal (depending on the command). */
+/* Check if the operands' types are legal*/
 bool areLegalOpTypes(const command *cmd, operandInfo op1, operandInfo op2, int lineNum)
 {
-	/* --- Check First Operand --- */
+	/* Check First Operand */
 	/* "lea" command (opcode is 6) can only get a label as the 1st op */
 	if (cmd->opcode == 6 && op1.type != LABEL)
 	{
@@ -408,7 +392,7 @@ bool areLegalOpTypes(const command *cmd, operandInfo op1, operandInfo op2, int l
 		return FALSE;
 	}
 
-	/* --- Check Second Operand --- */
+	/*Check Second Operand*/
 
 	/* 2nd operand can be a number only if the command is "cmp" (opcode is 1) or "prn" (opcode is 12).*/
 	if (op2.type == NUMBER && cmd->opcode != 1 && cmd->opcode != 12)
@@ -423,7 +407,7 @@ bool areLegalOpTypes(const command *cmd, operandInfo op1, operandInfo op2, int l
 void parseOpInfo(operandInfo *operand, int lineNum)
 {
 	int value = 0;
-	int value2 = 0;
+	int value2 = 0; /* Used in case of addressing method 2 */
 
 	if (isWhiteSpaces(operand->str))
 	{
@@ -436,7 +420,7 @@ void parseOpInfo(operandInfo *operand, int lineNum)
 	/* Check if the type is NUMBER */
 	if (*operand->str == '#')
 	{
-		operand->str++; /* Remove the '#' */
+		operand->str++; /* Skip '#' */
 
 		/* Check if the number is legal */
 		if (isspace(*operand->str)) 
@@ -459,7 +443,7 @@ void parseOpInfo(operandInfo *operand, int lineNum)
 	{
 		operand->type = LABEL;
 	}
-	/* Check if the type is Addressing method 2 */
+	/* Check if the type is INDEX (Addressing method 2) */
 	else if ( isIndex(operand->str, &value , &value2) == TRUE)
 	{
 		if((value%2) !=0 && value2%2 == 0 )
@@ -578,7 +562,7 @@ void parseCmdOperands(lineInfo *line, int *IC, int *DC)
 		return;
 	}
 
-	/* Check if there is a comma after the last param */
+	/* Check if there is a comma after the last parameter */
 	if (foundComma)
 	{
 		printf("ERROR: %d:Comma error\n",line->lineNum);
@@ -592,7 +576,6 @@ void parseCmdOperands(lineInfo *line, int *IC, int *DC)
 		return;
 	}
 }
-/* Parses the command in a command line. */
 void parseCommand(lineInfo *line, int *IC, int *DC)
 {
 	int cmdId = getCmdId(line->commandStr);
@@ -607,7 +590,6 @@ void parseCommand(lineInfo *line, int *IC, int *DC)
 		}
 		else
 		{
-			/* Illegal command. */
 			printf("ERROR: %d:No such command as \"%s\".\n",line->lineNum,line->commandStr);
 
 		}

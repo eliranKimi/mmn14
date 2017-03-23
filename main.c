@@ -3,25 +3,22 @@
 #include "functionDeclare.h"
 #include "dataStructures.h"
 
-/* Labels */
+/* Labels array */
 labelInfo labelArr[MAX_LABELS_NUM]; 
 int labelNum = 0;
 
-/* Entry Lines */
+/* Entry Lines  array*/
 lineInfo *entryLines[MAX_LABELS_NUM]; 
 int entryLabelsNum = 0;
 
-/* Data */
+/* Data  array */
 int dataArr[MAX_DATA_NUM];
 
-FILE *openFile(char *name, char *ending, const char *mode);
-void parseFile(char *fileName);
 
 
 int main(int argc, char* argv[])
 {
 	int i;
-
 
 	if(argc==1)
     {
@@ -56,11 +53,11 @@ FILE *openFile(char *name, char *ending, const char *mode)
 void parseFile(char *fileName)
 {
 	
-	lineInfo linesArr[MAX_LINES_NUM]; 
+	lineInfo linesArr[MAX_LINES_NUM];  /* Lines array */
 	int memoryArr[MAX_DATA_NUM] = { 0 };
-	int IC = 0;
-	int DC = 0;
-	int numOfErrors = 0;
+	int IC = 0;  /* Instruction counter */
+	int DC = 0; /* Data counter */
+	int numOfErrors = 0; /* Error counter */
 	int linesFound = 0;
 
 

@@ -1,7 +1,7 @@
 /*
  * data_s.h
  *
- *  Created on: Mar 14, 2017
+ *
  *      Author: eliran
  */
 
@@ -14,11 +14,9 @@
 #include "const.h"
 
 
-typedef unsigned int bool; /* Only get TRUE or FALSE values */
+typedef unsigned int bool; /*  TRUE or FALSE  */
 
-/* === First Read  === */
-
-/* Labels Management */
+/* Labels */
 typedef struct
 {
 	int address;					/* The address it contains */
@@ -27,7 +25,7 @@ typedef struct
 	bool isData;					/* Data flag (.data or .string) */
 } labelInfo;
 
-
+/* Command */
 typedef struct
 {
 	char *name;
@@ -43,7 +41,7 @@ typedef struct
 	int value;				/* Value */
 	int value2;				/* In case of addressing method 2- this will be the value of the second register*/
 	char *str;				/* String */
-	opType type;			/* Type */
+	opType type;			/* Operand Type */
 	int address;			/* The address of the operand in the memory */
 } operandInfo;
 
@@ -65,8 +63,7 @@ typedef struct
 	operandInfo op2;			/* The 2nd operand */
 } lineInfo;
 
-/* === Second Read  === */
-
+/* A,R,E */
 typedef enum { ABSOLUTE = 0, EXTENAL = 1, RELOCATABLE = 2 } eraType;
 
 /* Memory Word */
@@ -75,19 +72,18 @@ typedef struct /* 15 bits */
 {
 	unsigned int era : 2;
 
-	union /* 13 bits */
+	union
 	{
-		/* Commands (only 13 bits) */
 		struct
 		{
 			unsigned int dest : 2;		/* Destination op addressing method ID */
 			unsigned int src : 2;		/* Source op addressing method ID */
 			unsigned int opcode : 4;	/* Command ID */
-			unsigned int group : 2;		/* Number of params */
-			unsigned int unused : 3;			/* Unused Bits */
+			unsigned int group : 2;		/* Number of parameters */
+			unsigned int unused : 3;	/* Unused Bits */
 		} cmdBits;
 
-		/* Registers (only 13 bits) */
+
 		struct
 		{
 			unsigned int destBits : 6;
@@ -95,10 +91,10 @@ typedef struct /* 15 bits */
 			unsigned int : 1;			/* Unused Bit */
 		} regBits;
 
-		/* Other operands */
-		int value : 13; /* (13 bits) */
 
-	} valueBits; /* End of 13 bits union */
+		int value : 13;
+
+	} valueBits;
 
 } memoryWord;
 

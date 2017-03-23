@@ -1,5 +1,9 @@
-
-
+/*
+ * functiondeclare.h
+ *
+ *
+ *      Author: eliran
+ */
 #ifndef FUNCTIONDECLARE_H
 	#define FUNCTIONDECLARE_H
 
@@ -7,7 +11,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-
 
 #include "const.h"
 #include "dataStructures.h"
@@ -41,6 +44,7 @@ void parseOpInfo(operandInfo *operand, int lineNum);
 void parseCmdOperands(lineInfo *line, int *IC, int *DC);
 void parseCommand(lineInfo *line, int *IC, int *DC);
 
+/*misc */
 char *allocString(const char *str) ;
 int firstFileRead(FILE *file, lineInfo *linesArr, int *linesFound, int *IC, int *DC);
 void parseLine(lineInfo *line, char *lineStr, int lineNum, int *IC, int *DC);
@@ -53,7 +57,7 @@ void parseExternDirc(lineInfo *line);
 void parseStringDirc(lineInfo *line, int *IC, int *DC);
 void parseDataDirc(lineInfo *line, int *IC, int *DC);
 
-/* add */
+/* add  to data*/
 bool addStringToData(char *str, int *IC, int *DC, int lineNum);
 bool addNumberToData(int num, int *IC, int *DC, int lineNum);
 
@@ -77,12 +81,22 @@ bool addLineToMemory(int *memoryArr, int *memoryCounter, lineInfo *line);
 void addDataToMemory(int *memoryArr, int *memoryCounter, int DC);
 void printMemArr(int memoryCounter,int *memoryArr);
 int secondFileRead(int *memoryArr, lineInfo *linesArr, int lineNum, int IC, int DC);
+
+
+
 /* main.c methods */
-int intToBase16(int num, char *buf, int index);
-void fprintfBase16(FILE *file, int num, int strMinWidth);
+void parseFile(char *fileName);
+FILE *openFile(char *name, char *ending, const char *mode);
+
+
+/* Files functions */
 void createObjectFile(char *name, int IC, int DC, int *memoryArr);
 void createEntriesFile(char *name);
 void createExternFile(char *name, lineInfo *linesArr, int linesFound);
+
+/* Misc */
+int intToBase16(int num, char *buf, int index);
+void fprintfBase16(FILE *file, int num, int strMinWidth);
 void clearData(lineInfo *linesArr, int linesFound, int dataCount);
 
-#endif
+#endif /* FUNCTIONDECLARE_H_ */
