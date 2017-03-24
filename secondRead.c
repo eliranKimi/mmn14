@@ -159,7 +159,7 @@ bool addLineToMemory(int *memoryArr, int *memoryCounter, lineInfo *line)
 			/* Add the op2 word to the memory */
 			line->op2.address = FIRST_ADDRESS + *memoryCounter;
 			addWordToMemory(memoryArr, memoryCounter, getOpMemoryWord(line->op2, TRUE),FALSE);
-			/* First boolean is to check if operand isDest. second one isCmd */
+			/* First boolean is to check if operand isDest. second one isitCmd */
 		}
 	}
 }
