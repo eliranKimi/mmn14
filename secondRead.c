@@ -206,7 +206,7 @@ int getNumFromMemoryWord(memoryWord memory,bool isitcmd)
 	if ( isitcmd == TRUE)
 	{
 	/* Turn on unused bits */
-	return 28672 | (mask & ((memory.valueBits.value << 2) + memory.era));
+	return UNUSED_BITS_WORD | (mask & ((memory.valueBits.value << 2) + memory.era));
 	}
 	else
 	{
