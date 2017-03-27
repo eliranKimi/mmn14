@@ -14,7 +14,7 @@ extern int entryLabelsNum;
 
 bool isCommentOrEmpty(lineInfo *line)
 {
-	char *startOfText = line->lineStr; /* We don't want to change line->lineStr */
+	char *startOfText = line->lineStr;
 
 	if (*line->lineStr == ';')
 	{
@@ -94,7 +94,6 @@ bool isOneWord(char *str)
 
 
 
-/* Returns a pointer to the label with 'labelName' name in labelArr or NULL if there isn't such label. */
 labelInfo *getLabel(char *labelName)
 {
 	int i = 0;
@@ -135,7 +134,7 @@ void printLables()
 
 
 
-/* Returns the ID of the command with 'cmdName' name in cmdArr or -1 if there isn't such command. */
+/* Returns the command's ID . */
 int getCmdId(char *cmdName)
 {
 	int i = 0;
@@ -151,8 +150,6 @@ int getCmdId(char *cmdName)
 	}
 	return -1;
 }
-
-
 
 /* Removes all the spaces from the edges of the string ptStr is pointing to. */
 void trimStr(char **ptStr)
@@ -232,6 +229,7 @@ bool isIndex(char *line, int *value, int *value2)
 			if (ends != NULL)
 			{
 				*ends = '\0';
+
 
 				if (isRegister(starts,(int *) *&value2))
 				{
@@ -418,7 +416,7 @@ bool isLegalStringParam(char **strParam, int lineNum)
 	return FALSE;
 }
 
-/* Returns if the num is a legal number param, and save it's value in *value. */
+/* Returns if the num is a legal number parameter, and save it's value in *value. */
 bool isLegalNum(char *numStr, int numOfBits, int lineNum, int *value)
 {
 	char *endOfNum;

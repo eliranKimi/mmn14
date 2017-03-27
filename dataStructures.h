@@ -22,7 +22,7 @@ typedef struct
 	int address;					/* The address it contains */
 	char name[MAX_LABEL_LENGTH];	/* The name of the label */
 	bool isExtern;					/* Extern flag */
-	bool isData;					/* Data flag (.data or .string) */
+	bool isData;					/* Data flag */
 } labelInfo;
 
 /* Command */

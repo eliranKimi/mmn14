@@ -52,14 +52,14 @@ void printData(int DC)
 
 int firstFileRead(FILE *file, lineInfo *linesArr, int *linesFound, int *IC, int *DC)
 {
-	char lineStr[MAX_LINE_LENGTH + 2]; /* +2 for the \n and \0 at the end */
+	char lineStr[MAX_LINE_LENGTH];
 	int errorsFound = 0;
 
 	*linesFound = 0;
 
 	while (!feof(file))
 	{
-		fgets(lineStr, MAX_LINE_LENGTH + 2, file);
+		fgets(lineStr, MAX_LINE_LENGTH, file);
 	
 			parseLine(&linesArr[*linesFound], lineStr, *linesFound + 1, IC, DC);
 

@@ -16,7 +16,6 @@
 #include "dataStructures.h"
 
 
-/* ======== Methods Declaration ======== */
 /* generalFunctions.c methods */
 int getCmdId(char *cmdName);
 void printLables();

@@ -5,7 +5,6 @@
 
 /* Second read of the file - works with the data from first read*/
 
-
 extern labelInfo labelArr[MAX_LABELS_NUM]; /* Label array */
 extern int labelNum; /* Index to labels array */
 lineInfo *entryLines[MAX_LABELS_NUM]; /* Entry-s array */
@@ -331,8 +330,6 @@ void printMemArr(int memoryCounter,int *memoryArr)
 				printf(" ######## ");
 				printf("  %d ",memoryArr[i]);
 				printf(" ######## \n");
-
-
 
 			}
 		printf("count:%d\n",lineCount);
